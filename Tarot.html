@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Guia de Tarô</title>
+  <style>
+    /* Reset e base */
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #2a2544, #1c1a30);
+      color: #f0f0f3;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      user-select: none;
+    }
+    header {
+      background-color: rgba(40, 35, 63, 0.85);
+      padding: 25px 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      text-align: center;
+      border-bottom: 1px solid #564d8c;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    h1 {
+      font-weight: 700;
+      font-size: 2.8rem;
+      margin-bottom: 12px;
+      letter-spacing: 2px;
+      color: #d6caff;
+      text-shadow: 0 0 8px #9c8aff88;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    button {
+      cursor: pointer;
+      background: #735ed8;
+      border: none;
+      padding: 14px 28px;
+      color: white;
+      font-weight: 600;
+      font-size: 1.1rem;
+      border-radius: 8px;
+      box-shadow: 0 6px 12px #5b47c3aa;
+      transition: background-color 0.25s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    button:hover, button:focus {
+      background-color: #5b47c3;
+      box-shadow: 0 8px 18px #442f9aee;
+      outline: none;
+    }
+    main {
+      flex: 1 1 auto;
+      max-width: 960px;
+      margin: 20px auto 40px;
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+    }
+    /* Seção cartas selecionadas */
+    #selected-cards-section {
+      background: rgba(50, 45, 75, 0.75);
+      padding: 18px 15px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #6e5cd6aa;
+      margin-bottom: 28px;
+      user-select: text;
+    }
+    #selected-cards-section h2 {
+      font-weight: 700;
+      font-size: 1.4rem;
+      color: #b8aaff;
+      margin-bottom: 14px;
+      letter-spacing: 0.05em;
+    }
+    #selected-cards {
+      display: flex;
+      flex-wrap: nowrap;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: thin;
+      scrollbar-color: #9c8aff transparent;
+    }
+    #selected-cards::-webkit-scrollbar {
+      height: 8px;
+    }
+    #selected-cards::-webkit-scrollbar-thumb {
+      background-color: #9c8affcc;
+      border-radius: 8px;
+    }
+    #selected-cards .card {
+      flex: 0 0 auto;
+      border: 3px solid #b8aaff;
+      border-radius: 14px;
+      box-shadow: 0 3px 10px #5f56b3cc;
+      cursor: pointer;
+      transition: border-color 0.3s ease, transform 0.15s ease;
+      position: relative;
+      width: 130px;
+      height: 195px;
+      background-color: #2f2a53;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    #selected-cards .card:hover {
+      border-color: #d9d0ff;
+      transform: scale(1.07);
+      box-shadow: 0 6px 16px #b6a8ffdd;
+    }
+    #selected-cards .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 14px;
+      pointer-events: none;
+      user-select: none;
+    }
+    /* Galeria */
+    #gallery-section {
+      background: rgba(40, 35, 63, 0.75);
+      border-radius: 14px;
+      box-shadow: 0 0 24px #5f56b3cc;
+      padding: 25px 18px;
+      display: flex;
+      flex-direction: column;
+      user-select: text;
+      max-height: 70vh;
+      overflow: hidden;
+    }
+    #gallery-section h2 {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: #c0baff;
+      margin-bottom: 20px;
+      letter-spacing: 0.05em;
+      text-align: center;
+    }
+    #gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 22px;
+      justify-content: center;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #c0baff transparent;
+    }
+    #gallery::-webkit-scrollbar {
+      width: 10px;
+    }
+    #gallery::-webkit-scrollbar-thumb {
+      background-color: #c0baffcc;
+      border-radius: 12px;
+    }
+    .card {
+      width: 120px;
+      height: 180px;
+      border-radius: 14px;
+      border: 2px solid #7d72cc;
+      background-color: #2e2a4c;
+      box-shadow: 0 3px 12px #44416bcc;
+      position: relative;
+      cursor: pointer;
+      transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    .card:hover, .card:focus {
+      border-color: #b0a3ff;
+      box-shadow: 0 6px 22px #a7a1ffdd;
+      outline: none;
+      transform: translateY(-3px);
+    }
+    .card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 14px;
+      pointer-events: none;
+      user-select: none;
+    }
+    /* Botão de expandir */
+    .expand-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background-color: #7367d8dd;
+      border: none;
+      color: white;
+      font-size: 20px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: background-color 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      box-shadow: 0 0 8px #6e5cd6aa;
+      z-index: 10;
+    }
+    .expand-btn:hover, .expand-btn:focus {
+      background-color: #5248b6ee;
+      outline: none;
+    }
+    /* Botão adicionar (para leitura) */
+    .action-btn {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #a084ffcc;
+      color: #2f2a53;
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 6px 12px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 3px 6px #705ee833;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      user-select: none;
+    }
+    .action-btn:hover, .action-btn:focus {
+      background-color: #b1a8ffee;
+      color: #241e46;
+      outline: none;
+    }
+    /* Overlay para carta expandida */
+    .overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 12, 30, 0.85);
+      z-index: 9998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+    /* Carta expandida */
+    .expanded {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      width: 320px;
+      height: 480px;
+      transform: translate(-50%, -50%);
+      z-index: 9999;
+      box-shadow: 0 0 24px 6px #9c8affcc;
+      border: 3px solid #9c8affcc;
+      border-radius: 18px;
+      background-color: #372e6b;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      transition: transform 0.3s ease;
+      user-select: none;
+    }
+    .expanded img {
+      width: 100%;
+      height: 100%;
+      border-radius: 18px;
+      object-fit: cover;
+    }
+    /* Mensagem de alerta */
+    #message {
+      color: #ff9a9a;
+      font-weight: 600;
+      font-size: 1.15rem;
+      margin: 0 auto 18px;
+      text-align: center;
+      min-height: 1.4em;
+      letter-spacing: 0.03em;
+      user-select: none;
+      text-shadow: 0 0 6px #ff7676aa;
+    }
+    /* Scrollbar fina para todo body e componentes */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background-color: #7a6ccc88;
+      border-radius: 8px;
+    }
+    /* Responsivo */
+    @media (max-width: 650px) {
+      #selected-cards .card {
+        width: 110px;
+        height: 165px;
+      }
+      #gallery {
+        gap: 14px;
+      }
+      .card {
+        width: 100px;
+        height: 150px;
+      }
+      .expanded {
+        width: 90vw;
+        height: 135vw;
+        border-radius: 14px;
+      }
+      header h1 {
+        font-size: 2.2rem;
+      }
+      button {
+        padding: 12px 20px;
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Guia de Tarô</h1>
+    <div class="buttons">
+      <button aria-label="Mostrar leitura de 3 cartas" onclick="showReading()" id="btnReading" type="button">Leitura de 3 Cartas</button>
+      <button aria-label="Mostrar galeria de cartas" onclick="showGallery()" id="btnGallery" type="button">Galeria</button>
+    </div>
+  </header>
+
+  <main id="content" tabindex="-1">
+    <!-- Conteúdo injetado via JS -->
+  </main>
+
+  <div id="message" role="alert" aria-live="polite"></div>
+
+  <script>
+    const tarotCards = [
+      { name: "O Louco", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/RWS_Tarot_00_Fool.jpg/200px-RWS_Tarot_00_Fool.jpg", description: "Novo começo, liberdade, espontaneidade." },
+      { name: "O Mago", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/RWS_Tarot_01_Magician.jpg/200px-RWS_Tarot_01_Magician.jpg", description: "Habilidade, ação, poder, concentração." },
+      { name: "A Sacerdotisa", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/RWS_Tarot_02_High_Priestess.jpg/200px-RWS_Tarot_02_High_Priestess.jpg", description: "Mistério, intuição, inconsciente." },
+      { name: "A Imperatriz", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/RWS_Tarot_03_Empress.jpg/200px-RWS_Tarot_03_Empress.jpg", description: "Fertilidade, beleza, natureza." },
+      { name: "O Imperador", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/RWS_Tarot_04_Emperor.jpg/200px-RWS_Tarot_04_Emperor.jpg", description: "Autoridade, estrutura, controle." },
+      { name: "O Hierofante", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/RWS_Tarot_05_Hierophant.jpg/200px-RWS_Tarot_05_Hierophant.jpg", description: "Tradição, espiritualidade, orientação." },
+      { name: "Os Enamorados", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/RWS_Tarot_06_Lovers.jpg/200px-RWS_Tarot_06_Lovers.jpg", description: "Amor, harmonia, relacionamentos." },
+      { name: "O Carro", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/RWS_Tarot_07_Chariot.jpg/200px-RWS_Tarot_07_Chariot.jpg", description: "Vitória, determinação, autocontrole." },
+      { name: "A Força", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/RWS_Tarot_08_Strength.jpg/200px-RWS_Tarot_08_Strength.jpg", description: "Força interior, coragem, compaixão." },
+      { name: "O Eremita", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4d/RWS_Tarot_09_Hermit.jpg/200px-RWS_Tarot_09_Hermit.jpg", description: "Introspecção, sabedoria, solidão." },
+      { name: "A Roda da Fortuna", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/RWS_Tarot_10_Wheel_of_Fortune.jpg/200px-RWS_Tarot_10_Wheel_of_Fortune.jpg", description: "Destino, sorte, ciclos." },
+      { name: "A Justiça", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/RWS_Tarot_11_Justice.jpg/200px-RWS_Tarot_11_Justice.jpg", description: "Equilíbrio, justiça, verdade." },
+      { name: "O Pendurado", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/RWS_Tarot_12_Hanged_Man.jpg/200px-RWS_Tarot_12_Hanged_Man.jpg", description: "Sacrifício, nova perspectiva, pausa." },
+      { name: "A Morte", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/RWS_Tarot_13_Death.jpg/200px-RWS_Tarot_13_Death.jpg", description: "Transformação, fim de um ciclo, renovação." },
+      { name: "A Temperança", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/RWS_Tarot_14_Temperance.jpg/200px-RWS_Tarot_14_Temperance.jpg", description: "Moderação, equilíbrio, harmonia." },
+      { name: "O Diabo", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/RWS_Tarot_15_Devil.jpg/200px-RWS_Tarot_15_Devil.jpg", description: "Tentação, materialismo, escravidão." },
+      { name: "A Torre", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/RWS_Tarot_16_Tower.jpg/200px-RWS_Tarot_16_Tower.jpg", description: "Mudança brusca, revelação, caos." },
+      { name: "A Estrela", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/RWS_Tarot_17_Star.jpg/200px-RWS_Tarot_17_Star.jpg", description: "Esperança, inspiração, serenidade." },
+      { name: "A Lua", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/RWS_Tarot_18_Moon.jpg/200px-RWS_Tarot_18_Moon.jpg", description: "Ilusão, intuição, subconsciente." },
+      { name: "O Sol", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/99/RWS_Tarot_19_Sun.jpg/200px-RWS_Tarot_19_Sun.jpg", description: "Sucesso, alegria, otimismo." },
+      { name: "O Julgamento", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/dd/RWS_Tarot_20_Judgement.jpg/200px-RWS_Tarot_20_Judgement.jpg", description: "Renascimento, absolvição, chamado." },
+      { name: "O Mundo", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/RWS_Tarot_21_World.jpg/200px-RWS_Tarot_21_World.jpg", description: "Completude, realização, viagem." },
+      // Arcanos Menores - Copas
+      { name: "Ás de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/RWS_Tarot_AC.jpg/200px-RWS_Tarot_AC.jpg", description: "Amor, felicidade, contentamento." },
+      { name: "Dois de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/RWS_Tarot_02_Cups.jpg/200px-RWS_Tarot_02_Cups.jpg", description: "União, atração, conexão." },
+      { name: "Três de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/RWS_Tarot_03_Cups.jpg/200px-RWS_Tarot_03_Cups.jpg", description: "Celebração, amizade, comunidade." },
+      { name: "Quatro de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/RWS_Tarot_04_Cups.jpg/200px-RWS_Tarot_04_Cups.jpg", description: "Apatia, contemplação, desconexão." },
+      { name: "Cinco de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/RWS_Tarot_05_Cups.jpg/200px-RWS_Tarot_05_Cups.jpg", description: "Perda, pesar, arrependimento." },
+      { name: "Seis de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/RWS_Tarot_06_Cups.jpg/200px-RWS_Tarot_06_Cups.jpg", description: "Nostalgia, inocência, recordações." },
+      { name: "Sete de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/RWS_Tarot_07_Cups.jpg/200px-RWS_Tarot_07_Cups.jpg", description: "Ilusões, escolhas, fantasias." },
+      { name: "Oito de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4f/RWS_Tarot_08_Cups.jpg/200px-RWS_Tarot_08_Cups.jpg", description: "Abandono, partida, busca interior." },
+      { name: "Nove de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/17/RWS_Tarot_09_Cups.jpg/200px-RWS_Tarot_09_Cups.jpg", description: "Satisfação, contentamento, desejos realizados." },
+      { name: "Dez de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/RWS_Tarot_10_Cups.jpg/200px-RWS_Tarot_10_Cups.jpg", description: "Felicidade, harmonia familiar, plenitude." },
+      { name: "Valete de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/RWS_Tarot_Knave_Cups.jpg/200px-RWS_Tarot_Knave_Cups.jpg", description: "Sensibilidade, criatividade, mensageiro do amor." },
+      { name: "Cavaleiro de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/RWS_Tarot_Knight_Cups.jpg/200px-RWS_Tarot_Knight_Cups.jpg", description: "Romance, charme, idealismo." },
+      { name: "Rainha de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7c/RWS_Tarot_Queen_Cups.jpg/200px-RWS_Tarot_Queen_Cups.jpg", description: "Compaixão, intuição emocional, cuidado." },
+      { name: "Rei de Copas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/RWS_Tarot_King_Cups.jpg/200px-RWS_Tarot_King_Cups.jpg", description: "Equilíbrio emocional, sabedoria, diplomacia." },
+      // Arcanos Menores - Ouros
+      { name: "Ás de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/RWS_Tarot_AP.jpg/200px-RWS_Tarot_AP.jpg", description: "Prosperidade, segurança, novas oportunidades financeiras." },
+      { name: "Dois de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/RWS_Tarot_02_Pentacles.jpg/200px-RWS_Tarot_02_Pentacles.jpg", description: "Equilíbrio, adaptabilidade, malabarismo." },
+      { name: "Três de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/RWS_Tarot_03_Pentacles.jpg/200px-RWS_Tarot_03_Pentacles.jpg", description: "Colaboração, aprendizado, trabalho em equipe." },
+      { name: "Quatro de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/RWS_Tarot_04_Pentacles.jpg/200px-RWS_Tarot_04_Pentacles.jpg", description: "Conservadorismo, controle, segurança material." },
+      { name: "Cinco de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/RWS_Tarot_05_Pentacles.jpg/200px-RWS_Tarot_05_Pentacles.jpg", description: "Dificuldade material, isolamento, privação." },
+      { name: "Seis de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/RWS_Tarot_06_Pentacles.jpg/200px-RWS_Tarot_06_Pentacles.jpg", description: "Generosidade, caridade, compartilhar." },
+      { name: "Sete de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/RWS_Tarot_07_Pentacles.jpg/200px-RWS_Tarot_07_Pentacles.jpg", description: "Paciência, avaliação, investimento a longo prazo." },
+      { name: "Oito de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/RWS_Tarot_08_Pentacles.jpg/200px-RWS_Tarot_08_Pentacles.jpg", description: "Diligência, artesanato, aprendizado." },
+      { name: "Nove de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/RWS_Tarot_09_Pentacles.jpg/200px-RWS_Tarot_09_Pentacles.jpg", description: "Autossuficiência, luxo, realização material." },
+      { name: "Dez de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/RWS_Tarot_10_Pentacles.jpg/200px-RWS_Tarot_10_Pentacles.jpg", description: "Legado, família, riqueza, estabilidade." },
+      { name: "Valete de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/RWS_Tarot_Knave_Pentacles.jpg/200px-RWS_Tarot_Knave_Pentacles.jpg", description: "Aprendiz, estudioso, pragmático." },
+      { name: "Cavaleiro de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/RWS_Tarot_Knight_Pentacles.jpg/200px-RWS_Tarot_Knight_Pentacles.jpg", description: "Responsabilidade, trabalho duro, confiabilidade." },
+      { name: "Rainha de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/RWS_Tarot_Queen_Pentacles.jpg/200px-RWS_Tarot_Queen_Pentacles.jpg", description: "Praticidade, conforto, generosidade material." },
+      { name: "Rei de Ouros", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/RWS_Tarot_King_Pentacles.jpg/200px-RWS_Tarot_King_Pentacles.jpg", description: "Abundância, negócios, segurança financeira." },
+      // Arcanos Menores - Espadas
+      { name: "Ás de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/RWS_Tarot_AS.jpg/200px-RWS_Tarot_AS.jpg", description: "Clareza, verdade, vitória intelectual." },
+      { name: "Dois de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/RWS_Tarot_02_Swords.jpg/200px-RWS_Tarot_02_Swords.jpg", description: "Decisão difícil, equilíbrio, impasse." },
+      { name: "Três de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/RWS_Tarot_03_Swords.jpg/200px-RWS_Tarot_03_Swords.jpg", description: "Coração partido, dor emocional, traição." },
+      { name: "Quatro de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/RWS_Tarot_04_Swords.jpg/200px-RWS_Tarot_04_Swords.jpg", description: "Descanso, recuperação, retiro." },
+      { name: "Cinco de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/RWS_Tarot_05_Swords.jpg/200px-RWS_Tarot_05_Swords.jpg", description: "Conflito, vitória vazia, derrota." },
+      { name: "Seis de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/RWS_Tarot_06_Swords.jpg/200px-RWS_Tarot_06_Swords.jpg", description: "Transição, mudança, deixar para trás." },
+      { name: "Sete de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/RWS_Tarot_07_Swords.jpg/200px-RWS_Tarot_07_Swords.jpg", description: "Engano, estratégia, furtividade." },
+      { name: "Oito de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/RWS_Tarot_08_Swords.jpg/200px-RWS_Tarot_08_Swords.jpg", description: "Restrição, paralisia, vitimização." },
+      { name: "Nove de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/RWS_Tarot_09_Swords.jpg/200px-RWS_Tarot_09_Swords.jpg", description: "Ansiedade, preocupação, medo." },
+      { name: "Dez de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/RWS_Tarot_10_Swords.jpg/200px-RWS_Tarot_10_Swords.jpg", description: "Fim doloroso, traição, derrota." },
+      { name: "Valete de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/11/RWS_Tarot_Knave_Swords.jpg/200px-RWS_Tarot_Knave_Swords.jpg", description: "Vigilância, mente analítica, mensageiro." },
+      { name: "Cavaleiro de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/RWS_Tarot_Knight_Swords.jpg/200px-RWS_Tarot_Knight_Swords.jpg", description: "Ação rápida, ambição, impetuosidade." },
+      { name: "Rainha de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/RWS_Tarot_Queen_Swords.jpg/200px-RWS_Tarot_Queen_Swords.jpg", description: "Independência, clareza, objetividade." },
+      { name: "Rei de Espadas", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/RWS_Tarot_King_Swords.jpg/200px-RWS_Tarot_King_Swords.jpg", description: "Autoridade intelectual, justiça, verdade." },
+      // Arcanos Menores - Paus
+      { name: "Ás de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/RWS_Tarot_AA.jpg/200px-RWS_Tarot_AA.jpg", description: "Inspiração, novas energias, criatividade." },
+      { name: "Dois de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/RWS_Tarot_02_Wands.jpg/200px-RWS_Tarot_02_Wands.jpg", description: "Planejamento, decisão, futuro." },
+      { name: "Três de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/RWS_Tarot_03_Wands.jpg/200px-RWS_Tarot_03_Wands.jpg", description: "Expansão, progresso, visão." },
+      { name: "Quatro de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/RWS_Tarot_04_Wands.jpg/200px-RWS_Tarot_04_Wands.jpg", description: "Celebração, harmonia, recompensa." },
+      { name: "Cinco de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/RWS_Tarot_05_Wands.jpg/200px-RWS_Tarot_05_Wands.jpg", description: "Conflito, competição, desafios." },
+      { name: "Seis de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/RWS_Tarot_06_Wands.jpg/200px-RWS_Tarot_06_Wands.jpg", description: "Vitória, reconhecimento, sucesso." },
+      { name: "Sete de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/RWS_Tarot_07_Wands.jpg/200px-RWS_Tarot_07_Wands.jpg", description: "Defesa, perseverança, desafio." },
+      { name: "Oito de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/RWS_Tarot_08_Wands.jpg/200px-RWS_Tarot_08_Wands.jpg", description: "Movimento rápido, ação, progresso." },
+      { name: "Nove de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/RWS_Tarot_09_Wands.jpg/200px-RWS_Tarot_09_Wands.jpg", description: "Resiliência, persistência, força interior." },
+      { name: "Dez de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/RWS_Tarot_10_Wands.jpg/200px-RWS_Tarot_10_Wands.jpg", description: "Carga pesada, responsabilidade, esforço." },
+      { name: "Valete de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/RWS_Tarot_Knave_Wands.jpg/200px-RWS_Tarot_Knave_Wands.jpg", description: "Entusiasmo, energia, mensageiro." },
+      { name: "Cavaleiro de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/RWS_Tarot_Knight_Wands.jpg/200px-RWS_Tarot_Knight_Wands.jpg", description: "Ação, aventura, impulsividade." },
+      { name: "Rainha de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1a/RWS_Tarot_Queen_Wands.jpg/200px-RWS_Tarot_Queen_Wands.jpg", description: "Confiança, paixão, independência." },
+      { name: "Rei de Paus", img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/RWS_Tarot_King_Wands.jpg/200px-RWS_Tarot_King_Wands.jpg", description: "Liderança, visão, carisma." }
+    ];
+
+    const content = document.getElementById('content');
+    const message = document.getElementById('message');
+
+    let readingCards = [];
+    let expandedCard = null;
+    let overlay = null;
+
+    function clearMessage() {
+      message.textContent = '';
+    }
+    
+    function showMessage(msg) {
+      message.textContent = msg;
+      setTimeout(() => {
+        if (message.textContent === msg) clearMessage();
+      }, 3500);
+    }
+
+    function showReading() {
+      clearMessage();
+      content.innerHTML = `
+        <section id="selected-cards-section" aria-label="Cartas selecionadas para leitura">
+          <h2>Cartas Selecionadas (clique para remover)</h2>
+          <div id="selected-cards" role="list" tabindex="0" aria-live="polite" aria-relevant="additions removals"></div>
+        </section>
+        <section id="gallery-section" aria-label="Galeria de cartas para seleção">
+          <h2>Galeria de Cartas</h2>
+          <div id="gallery" role="list" tabindex="0" aria-live="polite"></div>
+        </section>
+      `;
+
+      readingCards = [];
+
+      const selectedDiv = document.getElementById('selected-cards');
+      const galleryDiv = document.getElementById('gallery');
+
+      selectedDiv.onclick = null;
+      selectedDiv.onkeydown = null;
+
+      tarotCards.forEach(card => {
+        const cardEl = createCard(card, true);
+        galleryDiv.appendChild(cardEl);
+      });
+
+      selectedDiv.addEventListener('click', e => {
+        const cardEl = e.target.closest('.card');
+        if (!cardEl) return;
+        const cardName = cardEl.getAttribute('data-name');
+        readingCards = readingCards.filter(c => c.name !== cardName);
+        cardEl.remove();
+        clearMessage();
+      });
+      
+      selectedDiv.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          const cardEl = e.target.closest('.card');
+          if (!cardEl) return;
+          e.preventDefault();
+          const cardName = cardEl.getAttribute('data-name');
+          readingCards = readingCards.filter(c => c.name !== cardName);
+          cardEl.remove();
+          clearMessage();
+        }
+      });
+      
+      content.focus();
+    }
+
+    function showGallery() {
+      clearMessage();
+      content.innerHTML = `
+        <section id="gallery-section" aria-label="Galeria completa de cartas">
+          <h2>Galeria Completa</h2>
+          <div id="gallery" role="list" tabindex="0" aria-live="polite"></div>
+        </section>
+      `;
+      const gallery = document.getElementById('gallery');
+      tarotCards.forEach(card => {
+        const cardEl = createCard(card, false);
+        gallery.appendChild(cardEl);
+      });
+      content.focus();
+    }
+
+    function createCard(card, allowAdd = false) {
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'card';
+      cardDiv.setAttribute('data-name', card.name);
+      cardDiv.setAttribute('tabindex', '0');
+      cardDiv.setAttribute('role', 'listitem');
+      cardDiv.setAttribute('aria-label', `${card.name} carta de tarô`);
+
+      const img = document.createElement('img');
+      img.src = card.img;
+      img.alt = `Imagem da carta ${card.name}`;
+      cardDiv.appendChild(img);
+
+      const expandBtn = document.createElement('button');
+      expandBtn.className = 'expand-btn';
+      expandBtn.setAttribute('aria-label', `Expandir detalhes da carta ${card.name}`);
+      expandBtn.textContent = '+';
+      expandBtn.onclick = (e) => {
+        e.stopPropagation();
+        openExpand(card);
+      };
+      cardDiv.appendChild(expandBtn);
+
+      if (allowAdd) {
+        const addBtn = document.createElement('button');
+        addBtn.className = 'action-btn';
+        addBtn.textContent = 'Adicionar';
+        addBtn.setAttribute('aria-label', `Adicionar carta ${card.name} à leitura`);
+        addBtn.onclick = (e) => {
+          e.stopPropagation();
+          if (readingCards.length >= 3) {
+            showMessage('Você só pode selecionar até 3 cartas para a leitura.');
+            return;
+          }
+          if (readingCards.find(c => c.name === card.name)) {
+            showMessage('Esta carta já está selecionada.');
+            return;
+          }
+          readingCards.push(card);
+          updateSelectedCards();
+        };
+        cardDiv.appendChild(addBtn);
+      }
+
+      cardDiv.onclick = () => {
+        if (allowAdd) {
+          if (readingCards.length >= 3) {
+            showMessage('Você só pode selecionar até 3 cartas para a leitura.');
+            return;
+          }
+          if (readingCards.find(c => c.name === card.name)) {
+            showMessage('Esta carta já está selecionada.');
+            return;
+          }
+          readingCards.push(card);
+          updateSelectedCards();
+        } else {
+          openExpand(card);
+        }
+      };
+
+      cardDiv.onkeydown = (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          cardDiv.click();
+        }
+      };
+
+      return cardDiv;
+    }
+
+    function updateSelectedCards() {
+      const selectedDiv = document.getElementById('selected-cards');
+      if (!selectedDiv) return;
+      selectedDiv.innerHTML = '';
+      readingCards.forEach(card => {
+        const cardEl = createCard(card, false);
+        selectedDiv.appendChild(cardEl);
+      });
+    }
+
+    function openExpand(card) {
+      if (expandedCard) return;
+      
+      overlay = document.createElement('div');
+      overlay.className = 'overlay active';
+      overlay.tabIndex = -1;
+      overlay.onclick = closeExpand;
+      document.body.appendChild(overlay);
+
+      expandedCard = document.createElement('div');
+      expandedCard.className = 'expanded';
+      expandedCard.tabIndex = 0;
+
+      const img = document.createElement('img');
+      img.src = card.img;
+      img.alt = `Carta expandida: ${card.name}`;
+      expandedCard.appendChild(img);
+
+      const desc = document.createElement('p');
+      desc.style.color = '#dcd6ff';
+      desc.style.background = 'rgba(40, 35, 63, 0.75)';
+      desc.style.padding = '12px 16px';
+      desc.style.margin = '12px 0 0';
+      desc.style.borderRadius = '12px';
+      desc.style.fontSize = '1rem';
+      desc.style.fontWeight = '600';
+      desc.style.textAlign = 'center';
+      desc.textContent = card.description;
+      expandedCard.appendChild(desc);
+
+      document.body.appendChild(expandedCard);
+      expandedCard.focus();
+      window.addEventListener('keydown', handleEsc);
+    }
+    
+    function closeExpand() {
+      if (!expandedCard) return;
+      expandedCard.remove();
+      overlay.remove();
+      expandedCard = null;
+      overlay = null;
+      window.removeEventListener('keydown', handleEsc);
+    }
+    
+    function handleEsc(e) {
+      if (e.key === 'Escape') {
+        closeExpand();
+      }
+    }
+
+    // Ao carregar, mostrar leitura de 3 cartas
+    showReading();
+  </script>
+</body>
+</html>
